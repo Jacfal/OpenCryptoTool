@@ -7,7 +7,7 @@ namespace OpenCryptoTool
     /// <summary>
     ///     AES cryptographic class.
     /// </summary>
-    public class AesCrypto
+    public class AesProvider
     {
         /// <summary>
         ///     AES Encryption method.
