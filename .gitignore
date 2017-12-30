@@ -379,4 +379,5 @@ ASALocalRun/
     Blog
     About
 
-
+# vscode
+*.vscode
