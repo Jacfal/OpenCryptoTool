@@ -29,12 +29,14 @@ namespace OpenCryptoTool.Models
             string initializationVector, 
             string key, 
             string phrase,
+            SymmetricCipherType cipherType,
             EncryptedTextReturnOptions returnedDataFormat)
         {
-            InitializationVector = initializationVector;
+            IV = initializationVector;
             Key = key;
             Phrase = phrase;
             Encoded = returnedDataFormat.ToString();
+            Method = cipherType.ToString();
         }
 
         /// <summary>
@@ -46,22 +48,24 @@ namespace OpenCryptoTool.Models
         public SymmetricCryptographyCliOutput(
             byte[] initializationVector, 
             byte[] key, 
-            byte[] encryptedPhrase)
+            byte[] encryptedPhrase,
+            SymmetricCipherType cipherType) : this(
+                Convert.ToBase64String(initializationVector),
+                Convert.ToBase64String(key),
+                Convert.ToBase64String(encryptedPhrase),
+                cipherType,
+                EncryptedTextReturnOptions.Base64String)
         {
-            InitializationVector = Convert.ToBase64String(initializationVector);
-            Key = Convert.ToBase64String(key);
-            Phrase = Convert.ToBase64String(encryptedPhrase);
-            Encoded = EncryptedTextReturnOptions.Base64String.ToString();
         }
 
         /// <summary>
         ///     Encryption, decryption method.
         /// </summary>
-        public string Method { get; set; } // TODO
+        public string Method { get; set; }
         /// <summary>
         ///     Initialization vector.
         /// </summary>
-        public string InitializationVector { get; private set; }
+        public string IV { get; private set; }
         /// <summary>
         ///     Encryption key.
         /// </summary>

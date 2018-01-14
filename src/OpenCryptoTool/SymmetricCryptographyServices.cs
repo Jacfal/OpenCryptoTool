@@ -99,7 +99,7 @@ namespace OpenCryptoTool
 
             Log.Information("Successfully encrypted.");
 
-            return new SymmetricCryptographyCliOutput(IV, key, encrypted);
+            return new SymmetricCryptographyCliOutput(IV, key, encrypted, toEncryption.CipherType);
         }
 
         /// <summary>

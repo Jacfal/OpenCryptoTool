@@ -8,7 +8,6 @@ namespace OpenCryptoTool
 {
     class Program
     {
-        // TODO logs
         // TODO json
         static void Main(string[] args)
         {

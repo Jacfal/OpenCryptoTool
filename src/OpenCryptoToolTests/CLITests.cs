@@ -29,7 +29,7 @@ namespace OpenCryptoToolTests
 
             // ASSERT
             var keyLength = Convert.FromBase64String(cliOutput.Key).Length;
-            var IVLength = Convert.FromBase64String(cliOutput.InitializationVector).Length;
+            var IVLength = Convert.FromBase64String(cliOutput.IV).Length;
 
             // try convert phrase from base64
             Convert.FromBase64String(cliOutput.Phrase);
