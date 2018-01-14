@@ -1,4 +1,5 @@
 using OpenCryptoTool.Models;
+using Serilog;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -53,12 +54,20 @@ namespace OpenCryptoTool
                 aes.IV = initializationVector;
                 var encryptor = aes.CreateEncryptor(key, aes.IV);
 
+                Log.Information("AesCryptoServiceProvider for encryption created.");
+
                 using (var memoryStream = new MemoryStream())
                 {
+                    Log.Information("Memory stream - ready.");
+
                     using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
                     {
+                        Log.Information("Crypto stream - ready.");
+
                         using (var streamWritter = new StreamWriter(cryptoStream))
                         {
+                            Log.Information("Stream writter - ready.");
+
                             streamWritter.Write(toEncrypt);
                         }
                     }
@@ -104,12 +113,20 @@ namespace OpenCryptoTool
 
                 var decryptor = aes.CreateDecryptor();
 
+                Log.Information("AesCryptoServiceProvider for decryption created.");
+
                 using (var memoryStream = new MemoryStream(toDecrypt))
                 {
+                    Log.Information("Memory stream - ready.");
+
                     using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                     {
+                        Log.Information("Crypto stream - ready.");
+
                         using (var streamReader = new StreamReader(cryptoStream))
                         {
+                            Log.Information("Stream reader - ready.");
+
                             var decrytped = streamReader.ReadToEnd();
                             return decrytped;
                         }

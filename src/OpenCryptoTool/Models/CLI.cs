@@ -56,9 +56,6 @@ namespace OpenCryptoTool.Models
         Aes
     }
 
-    /// <summary>
-    ///     
-    /// </summary>
     public abstract class BaseCipherType
     {
         public BaseCipherType(int keySize, CryptographyStandard cryptographyStandard, CipherMode cipherMode)
@@ -79,6 +76,11 @@ namespace OpenCryptoTool.Models
             : base (keySize, cryptographyStandard, cipherMode)
         {
 
+        }
+
+        public override string ToString()
+        {
+            return $"{CryptographyStandard.ToString()}-{KeySize}-{CipherMode.ToString()}".ToLower();
         }
     }
 }
