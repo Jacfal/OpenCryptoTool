@@ -1,3 +1,4 @@
+using OpenCryptoTool.Models;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -10,13 +11,37 @@ namespace OpenCryptoTool
     public class AesProvider
     {
         /// <summary>
+        ///     Symmetric cryptography properties.
+        /// </summary>
+        public ISymmetricCryptographyProperties Properties { get; set; }
+
+        /// <summary>
+        ///     Creates new instance of AES crypto provider.
+        /// </summary>
+        public AesProvider()
+        {
+        }
+
+        /// <summary>
+        ///     Creates new instance of AES crypto provider.
+        /// </summary>
+        /// <param name="key">Symmetric key.</param>
+        /// <param name="IV">Initialization vector.</param>
+        /// <param name="cypherMode">Cipher mode.</param>
+        public AesProvider(string key, string IV, CipherMode cipherMode)
+        {
+            Properties = new SymmetricCryptographyProperties(key, IV, cipherMode);
+        }
+
+        /// <summary>
+        /// <summary>
         ///     AES Encryption method.
         /// </summary>
         /// <param name="toEncrypt">String which should be encrypted.</param>
         /// <param name="key">Encryption key.</param>
         /// <param name="initializationVector">Initialization vector.</param>
         /// <param name="cipherMode">Block cipher mode of operation.</param>
-        /// <returns></returns>
+        /// <returns>Encrypted bytes array.</returns>
         public byte[] Encrypt(string toEncrypt, byte[] key,byte[] initializationVector, CipherMode cipherMode)
         {
             if(string.IsNullOrEmpty(toEncrypt)) throw new ArgumentNullException("Encrypted text cann't be null or empty.");
@@ -45,11 +70,27 @@ namespace OpenCryptoTool
         /// <summary>
         ///     AES decryption method.
         /// </summary>
+        /// <param name="toDecrypt">Phrase to decrypt.</param>
+        /// <returns>Decrypted phrase.</returns>
+        public string Decrypt(string toDecrypt)
+        {
+            if (Properties == null) throw new NullReferenceException("Aes provider properties mus be set.");
+            if (Properties.Key == null) throw new NullReferenceException("The decryption key must be set.");
+            if (Properties.InitializationVector == null) throw new NullReferenceException("The initialization vector must be set.");
+
+            var toDecryptBytes = Convert.FromBase64String(toDecrypt);
+
+            return Decrypt(toDecryptBytes, Properties.Key, Properties.InitializationVector, Properties.CipherMode);
+        }
+
+        /// <summary>
+        ///     AES decryption method.
+        /// </summary>
         /// <param name="toDecrypt">Byte array which should be decrypted.</param>
         /// <param name="key">Decryption key.</param>
         /// <param name="initializationVector">Initialization vector.</param>
         /// <param name="cipherMode">Block cipher mode of operation.</param>
-        /// <returns></returns>
+        /// <returns>Decrypted string.</returns>
         public string Decrypt(byte[] toDecrypt, byte[] key, byte[] initializationVector, CipherMode cipherMode)
         {
             if(toDecrypt == null || toDecrypt.Length < 0) throw new ArgumentNullException("Encrypted text cann't be null or empty.");
@@ -59,7 +100,9 @@ namespace OpenCryptoTool
             {
                 aes.Mode = cipherMode;
                 aes.IV = initializationVector;
-                var decryptor = aes.CreateDecryptor(key, aes.IV);
+                aes.Key = key;
+
+                var decryptor = aes.CreateDecryptor();
 
                 using (var memoryStream = new MemoryStream(toDecrypt))
                 {

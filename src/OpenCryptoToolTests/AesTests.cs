@@ -11,7 +11,7 @@ namespace AesTests
         [DataRow("Hello, world!", 256)]
         [DataRow("Another test string .!;", 192)]
         [DataRow("Test string![]{}%", 128)]
-        public void EncryptionDecryptionTestSuccess(string testPhrase, int keySize)
+        public void AesEncryptionDecryptionTestSuccess(string testPhrase, int keySize)
         {
             // ARRANGE
             var aesCrypto = new AesProvider();
@@ -25,6 +25,6 @@ namespace AesTests
 
             // ASSERT
             Assert.AreEqual(testPhrase, decrypted);
-        }
+        } 
     }
 }
