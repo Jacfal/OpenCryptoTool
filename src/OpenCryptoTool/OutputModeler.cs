@@ -30,7 +30,7 @@ namespace OpenCryptoTool
             }
 
             // Process to output
-            if (string.IsNullOrEmpty(input.OutputFile))
+            if (string.IsNullOrEmpty(input.OutputFilePath))
             {
                 PrintOutputToConsole(formattedOutput);
             }

@@ -2,7 +2,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenCryptoTool;
 using OpenCryptoTool.Models;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace OpenCryptoToolTests
 {
@@ -19,7 +22,7 @@ namespace OpenCryptoToolTests
             var cliInput = new Aes256CBC()
             {
                 Encryption = true,
-                Phrase = phrase,
+                Content = phrase,
                 Key = key,
                 InitializationVector = IV
             };
@@ -58,7 +61,7 @@ namespace OpenCryptoToolTests
             var cliInput = new Aes256CBC()
             {
                 Decryption = true,
-                Phrase = encryptedPhrase,
+                Content = encryptedPhrase,
                 Key = key,
                 InitializationVector = IV
             };
@@ -73,6 +76,62 @@ namespace OpenCryptoToolTests
 
         public void Aes256CBC_CLI_Decryption_Failed(string encryptedPhrase, string key, string IV)
         {
+        }
+
+        [TestMethod]
+        public async Task OpenInputFile_Success()
+        {
+            // ASSERT
+            var testTextFile = "TestTextFile.txt";
+            CreateTestTextFile(testTextFile);
+
+            var testLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var fullPath = Path.Combine(testLocation, testTextFile);
+
+            var testFileContent = await File.ReadAllLinesAsync(fullPath);
+
+            // ACT
+            var testInput = new Aes256CBC()
+            {
+                InputFilePath = fullPath
+            };
+
+            // ARRANGE
+            Assert.AreEqual(testInput.Content, string.Join('\n', testFileContent));
+        }
+
+        [TestMethod]
+        public void OpenInputFile_Failed()
+        {
+            // ASSERT
+            var testTextFile = "NonExistTestTextFile.txt";
+
+            var testLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var fullPath = Path.Combine(testLocation, testTextFile);
+
+            FileNotFoundException exception = null;
+
+            // ACT
+            try
+            {
+                var testInput = new Aes256CBC()
+                {
+                    InputFilePath = fullPath
+                };
+            }
+            catch (FileNotFoundException e)
+            {
+                exception = e;
+            }
+
+            // ARRANGE
+            Assert.IsNotNull(exception);
+        }
+
+        private void CreateTestTextFile(string fileName)
+        {
+            var testFileText = new string[] { "Hello, world!", "How are you?", "Greetings from Jacob!" };
+            File.WriteAllLines(fileName, testFileText);
         }
     }
 

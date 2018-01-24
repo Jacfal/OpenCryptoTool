@@ -3,6 +3,8 @@ using System;
 using System.Text;
 using OpenCryptoTool.Models;
 using System.Security.Cryptography;
+using System.IO;
+using Serilog;
 
 namespace OpenCryptoTool.Models
 {
@@ -12,16 +14,55 @@ namespace OpenCryptoTool.Models
     public abstract class BaseCryptographyCliInput
     {
         /// <summary>
-        ///     Output file.
+        ///     Path to input file.
+        /// </summary>
+        [Option('i', "input")]
+        public string InputFilePath
+        {
+            get
+            {
+                return _inputFilePath;
+            }
+
+            set
+            {
+                var exist = File.Exists(value);
+
+                if (!exist) throw new FileNotFoundException("Invalid path to input file.");
+
+                _inputFilePath = value;
+                LoadInputFileContent();
+            }
+        }
+        private string _inputFilePath;
+
+        /// <summary>
+        ///     Path to output file.
         /// </summary>
         [Option('o', "output")]
-        public string OutputFile { get; set; }
+        public string OutputFilePath { get; set; }
 
         /// <summary>
         ///     Output format.
         /// </summary>
         [Option('f', "format")]
         public OutputFormat OutputFormat { get; set; }
+
+        /// <summary>
+        ///     Content which should be en/decrypted.
+        /// </summary>
+        [Option('c', "content")]
+        public string Content { get; set; }
+
+        private void LoadInputFileContent()
+        {
+            if (!string.IsNullOrEmpty(Content))
+            {
+                Log.Information("Content (-c, --content) is not empty and path to the valid input file was entered. Content field will be replaced by input file content.");
+            }
+
+            Content = string.Join("\n", File.ReadAllLines(InputFilePath));
+        }
     }
 
     /// <summary>
@@ -29,8 +70,6 @@ namespace OpenCryptoTool.Models
     /// </summary>
     public abstract class SymmetricCryptographyCliInput : BaseCryptographyCliInput, ISymmetricCryptographyCliInput
     {
-        [Option('p', "phrase")]
-        public string Phrase { get; set; }
         [Option('e', "encrypt")]
         public bool Encryption { get; set; }
         [Option('d', "decrypt")]
@@ -38,7 +77,7 @@ namespace OpenCryptoTool.Models
         public SymmetricCipherType CipherType { get; set; }
         [Option('k', "key")]
         public string Key { get; set; }
-        [Option('i', "iv")]
+        [Option('v', "iv")]
         public string InitializationVector { get; set; }
     }
 

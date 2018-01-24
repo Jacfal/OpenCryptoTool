@@ -15,17 +15,15 @@ namespace OpenCryptoTool
         ///     Encryption services processor.
         /// </summary>
         /// <param name="cliInput">CLI options.</param>
-        public static SymmetricCryptographyCliOutput ProcessOperation(object cliInput)
+        public static SymmetricCryptographyCliOutput ProcessOperation(ISymmetricCryptographyCliInput cliInput)
         {
-            var symmetricCryptographyCli = cliInput as ISymmetricCryptographyCliInput;
-
-            Log.Information($"Command for {symmetricCryptographyCli.CipherType.CryptographyStandard.ToString()} de/encryption successfully parsed.");
+            Log.Information($"Command for {cliInput.CipherType.CryptographyStandard.ToString()} de/encryption successfully parsed.");
 
             SymmetricCryptographyCliOutput cliOutput = null;
-            switch (symmetricCryptographyCli.CipherType.CryptographyStandard)
+            switch (cliInput.CipherType.CryptographyStandard)
             {
                 case (CryptographyStandard.Aes):
-                    cliOutput = AesCryptography(symmetricCryptographyCli);
+                    cliOutput = AesCryptography(cliInput);
                     break;
 
                 default:
@@ -95,7 +93,7 @@ namespace OpenCryptoTool
                 IV = aesProvider.GenerateInitializationVector();
             }
 
-            var encrypted = aesProvider.Encrypt(toEncryption.Phrase, key, IV, toEncryption.CipherType.CipherMode);
+            var encrypted = aesProvider.Encrypt(toEncryption.Content, key, IV, toEncryption.CipherType.CipherMode);
 
             Log.Information("Successfully encrypted.");
 
@@ -111,11 +109,11 @@ namespace OpenCryptoTool
         {
             Log.Information($"New aes decryption request => {toDecryption.CipherType}");
 
-            if (string.IsNullOrEmpty(toDecryption.Phrase))
+            if (string.IsNullOrEmpty(toDecryption.Content))
             {
                 Log.Information("Data which should be decrypted missing - asking user for input.");
 
-                toDecryption.Phrase = CLIHelpers.InformationProvider("Enter entrycpted phrase");
+                toDecryption.Content = CLIHelpers.InformationProvider("Enter entrycpted phrase");
             }
 
             if (string.IsNullOrEmpty(toDecryption.Key))
@@ -133,7 +131,7 @@ namespace OpenCryptoTool
             }
 
             var aesProvider = new AesProvider(toDecryption.Key, toDecryption.InitializationVector, toDecryption.CipherType.CipherMode);
-            var decrypted =  aesProvider.Decrypt(toDecryption.Phrase);
+            var decrypted =  aesProvider.Decrypt(toDecryption.Content);
 
             Log.Information("Successfully decrypted.");
 

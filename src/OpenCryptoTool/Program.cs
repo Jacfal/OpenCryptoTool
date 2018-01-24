@@ -8,7 +8,6 @@ namespace OpenCryptoTool
 {
     class Program
     {
-        // TODO json
         static void Main(string[] args)
         {
             var loggerConfiguration = new LoggerConfiguration()
@@ -32,7 +31,9 @@ namespace OpenCryptoTool
                 result
                     .WithParsed(obj =>
                     {
-                        var cryptoResult = SymmetricCryptographyServices.ProcessOperation(obj);
+                        var symmetricCliInput = obj as ISymmetricCryptographyCliInput;
+
+                        var cryptoResult = SymmetricCryptographyServices.ProcessOperation(symmetricCliInput);
 
                         OutputModeler.CreateOutput(obj as BaseCryptographyCliInput, cryptoResult);
                     }); // TODO with no parsed
