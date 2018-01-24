@@ -22,6 +22,8 @@ namespace OpenCryptoTool
             #endif
 
             Log.Logger = loggerConfiguration.CreateLogger();
+            Log.Information("");
+            Log.Information("Operation started.");
 
             try
             {
@@ -30,13 +32,19 @@ namespace OpenCryptoTool
                 result
                     .WithParsed(obj =>
                     {
-                        Console.WriteLine(SymmetricCryptographyServices.ProcessOperation(obj));
+                        var cryptoResult = SymmetricCryptographyServices.ProcessOperation(obj);
+
+                        OutputModeler.CreateOutput(obj as BaseCryptographyCliInput, cryptoResult);
                     }); // TODO with no parsed
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 Log.Information(e.ToString());
+            }
+            finally
+            {
+                Log.Information("Operation complete.");
             }
         }
     }

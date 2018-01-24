@@ -30,7 +30,7 @@ namespace OpenCryptoTool.Helpers
                     stringToReturn += ($"{propertyName}:{propertyValue}\n");
                 }
             }
-
+            
             return stringToReturn;
         }
 

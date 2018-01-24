@@ -1,7 +1,7 @@
 namespace OpenCryptoTool.Models
 {
     /// <summary>
-    ///     Encryption options.
+    ///     Symmetric cryptography input CLI options.
     /// </summary>
     public interface ISymmetricCryptographyCliInput
     {

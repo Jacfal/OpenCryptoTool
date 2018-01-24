@@ -26,6 +26,7 @@ namespace OpenCryptoToolTests
 
             // ACT
             var cliOutput = SymmetricCryptographyServices.ProcessOperation(cliInput);
+            OutputModeler.CreateOutput(cliInput, cliOutput);
 
             // ASSERT
             var keyLength = Convert.FromBase64String(cliOutput.Key).Length;
@@ -64,12 +65,13 @@ namespace OpenCryptoToolTests
 
             // ACT
             var cliOutput = SymmetricCryptographyServices.ProcessOperation(cliInput);
+            OutputModeler.CreateOutput(cliInput, cliOutput);
 
             // ASSERT
             Assert.AreEqual(expectedOutput, cliOutput.Phrase);
         }
 
-        public void Aes256CBC_Encryption_Decryption()
+        public void Aes256CBC_CLI_Decryption_Failed(string encryptedPhrase, string key, string IV)
         {
         }
     }

@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using OpenCryptoTool;
 using OpenCryptoTool.Helpers;
 using System;
@@ -85,7 +86,7 @@ namespace OpenCryptoTool.Models
         /// <returns></returns>
         public override string ToString()
         {
-            return CLIHelpers.PropertiesToString(this);
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

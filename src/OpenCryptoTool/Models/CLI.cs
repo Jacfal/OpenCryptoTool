@@ -7,9 +7,27 @@ using System.Security.Cryptography;
 namespace OpenCryptoTool.Models
 {
     /// <summary>
+    ///     Base cryptography CLI input options.
+    /// </summary>
+    public abstract class BaseCryptographyCliInput
+    {
+        /// <summary>
+        ///     Output file.
+        /// </summary>
+        [Option('o', "output")]
+        public string OutputFile { get; set; }
+
+        /// <summary>
+        ///     Output format.
+        /// </summary>
+        [Option('f', "format")]
+        public OutputFormat OutputFormat { get; set; }
+    }
+
+    /// <summary>
     ///     CLI options for symmetric encryption.
     /// </summary>
-    public abstract class SymmetricEncryptionOptionsCliInput : ISymmetricCryptographyCliInput
+    public abstract class SymmetricCryptographyCliInput : BaseCryptographyCliInput, ISymmetricCryptographyCliInput
     {
         [Option('p', "phrase")]
         public string Phrase { get; set; }
@@ -28,7 +46,7 @@ namespace OpenCryptoTool.Models
     ///     Aes 256 CBC CLI command.
     /// </summary>
     [Verb("aes-256-cbc", HelpText = "N/A")]
-    public class Aes256CBC : SymmetricEncryptionOptionsCliInput
+    public class Aes256CBC : SymmetricCryptographyCliInput
     {
         public Aes256CBC()
         {
@@ -40,7 +58,7 @@ namespace OpenCryptoTool.Models
     ///     Aes 192 CBC CLI command.
     /// </summary>
     [Verb("aes-192-cbc", HelpText = "N/A")]
-    public class Aes192CBC : SymmetricEncryptionOptionsCliInput
+    public class Aes192CBC : SymmetricCryptographyCliInput
     {
         public Aes192CBC()
         {
