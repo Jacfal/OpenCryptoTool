@@ -40,7 +40,21 @@ namespace OpenCryptoTool.Models
         ///     Path to output file.
         /// </summary>
         [Option('o', "output")]
-        public string OutputFilePath { get; set; }
+        public string OutputFilePath
+        {
+            get
+            {
+                return _outputFilePath;
+            }
+            set
+            {
+                // TODO output kontrola
+                //if (!Uri.IsWellFormedUriString(value, UriKind.RelativeOrAbsolute)) throw new UriFormatException("Invalid output path.");
+
+                _outputFilePath = value;
+            }
+        }
+        private string _outputFilePath;
 
         /// <summary>
         ///     Output format.

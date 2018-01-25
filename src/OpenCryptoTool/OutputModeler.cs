@@ -4,6 +4,7 @@ using OpenCryptoTool.Models;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace OpenCryptoTool
@@ -12,8 +13,6 @@ namespace OpenCryptoTool
     {
         public static void CreateOutput(BaseCryptographyCliInput input, object toOutput)
         {
-            // TODO to output check
-
             // Get required format
             string formattedOutput = default(string);
             switch (input.OutputFormat)
@@ -32,18 +31,14 @@ namespace OpenCryptoTool
             // Process to output
             if (string.IsNullOrEmpty(input.OutputFilePath))
             {
-                PrintOutputToConsole(formattedOutput);
+                Log.Information("Printing output to the console.");
+                Console.WriteLine(formattedOutput);
             }
             else
             {
-                // to file
+                Log.Information($"Data will be saved into the file {input.OutputFilePath}.");
+                File.WriteAllText(input.OutputFilePath, formattedOutput);
             }
-        }
-
-        private static void PrintOutputToConsole(string output)
-        {
-            Log.Information("Printing output to console.");
-            Console.WriteLine(output);
         }
     }
 }
