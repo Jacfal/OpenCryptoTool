@@ -1,5 +1,5 @@
 using System.Security.Cryptography;
-using OpenCryptoTool;
+using OpenCryptoTool.Providers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AesTests
@@ -11,7 +11,7 @@ namespace AesTests
         [DataRow("Hello, world!", 256)]
         [DataRow("Another test string .!;", 192)]
         [DataRow("Test string![]{}%", 128)]
-        public void AesEncryptionDecryptionTestSuccess(string testPhrase, int keySize)
+        public void Aes_Encryption_Decryption_Success(string testPhrase, int keySize)
         {
             // ARRANGE
             var aesCrypto = new AesProvider();
@@ -25,6 +25,29 @@ namespace AesTests
 
             // ASSERT
             Assert.AreEqual(testPhrase, decrypted);
-        } 
+        }
+
+        [DataTestMethod]
+        [DataRow(150)]
+        [DataRow(289)]
+        [DataRow(56)]
+        public void Aes_InvalidKey_Error(int keySize)
+        {
+            // ARRANGE
+            var aesCrypto = new AesProvider();
+
+            CryptographicException cryptographyError = null;
+            try
+            {
+                var key = aesCrypto.GenerateKey(keySize);
+            }
+            catch (CryptographicException e)
+            {
+                cryptographyError = e;
+            }
+
+            // ASSERT
+            Assert.IsNotNull(cryptographyError);
+        }
     }
 }

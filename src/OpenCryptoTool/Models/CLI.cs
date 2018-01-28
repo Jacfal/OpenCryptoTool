@@ -76,6 +76,12 @@ namespace OpenCryptoTool.Models
             }
 
             Content = string.Join("\n", File.ReadAllLines(InputFilePath));
+
+            // output format should be json by default
+            if (OutputFormat == OutputFormat.unknown)
+            {
+                OutputFormat = OutputFormat.json;
+            }
         }
     }
 
@@ -94,6 +100,8 @@ namespace OpenCryptoTool.Models
         [Option('v', "iv")]
         public string InitializationVector { get; set; }
     }
+    
+    // TODO rest of AES methods
 
     /// <summary>
     ///     Aes 256 CBC CLI command.
@@ -124,7 +132,9 @@ namespace OpenCryptoTool.Models
     /// </summary>
     public enum CryptographyStandard
     {
-        Aes
+        Aes,
+        Des,
+        TripleDes
     }
 
     public abstract class BaseCipherType
