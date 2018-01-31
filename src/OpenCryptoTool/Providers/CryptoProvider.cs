@@ -14,7 +14,7 @@ namespace OpenCryptoTool.Providers
         /// <summary>
         ///     Symmetric cryptography properties.
         /// </summary>
-        public ISymmetricCryptographyProperties Properties { get; set; }
+        public ISymmetricCryptographyProperties CryptographyProperties { get; set; }
 
         protected SymmetricAlgorithm _symmetricAlgorithm;
 
@@ -41,7 +41,22 @@ namespace OpenCryptoTool.Providers
             SymmetricAlgorithm symmetricAlgorithm)
             : this (symmetricAlgorithm)
         {
-            Properties = new SymmetricCryptographyProperties(key, IV, cipherMode);
+            CryptographyProperties = new SymmetricCryptographyProperties(key, IV, cipherMode);
+        }
+
+        /// <summary>
+        ///     Create a new crypto provider.
+        /// </summary>
+        /// <param name="key">Symmetric key.</param>
+        /// <param name="cypherMode">Cipher mode.</param>
+        /// <param name="symmetricAlgorithm">Symmetric algorithm implementation.</param>
+        public CryptoProvider(
+            string key,
+            CipherMode cipherMode,
+            SymmetricAlgorithm symmetricAlgorithm)
+            : this(symmetricAlgorithm)
+        {
+            CryptographyProperties = new SymmetricCryptographyProperties(key, cipherMode);
         }
 
         /// <summary>
@@ -85,13 +100,17 @@ namespace OpenCryptoTool.Providers
         /// <returns>Decrypted phrase.</returns>
         public string Decrypt(string toDecrypt)
         {
-            if (Properties == null) throw new NullReferenceException("Aes provider properties mus be set.");
-            if (Properties.Key == null) throw new NullReferenceException("The decryption key must be set.");
-            if (Properties.InitializationVector == null) throw new NullReferenceException("The initialization vector must be set.");
+            if (CryptographyProperties == null) throw new NullReferenceException("Aes provider properties mus be set.");
+            if (CryptographyProperties.Key == null) throw new NullReferenceException("The decryption key must be set.");
+
+            if (CryptographyProperties.InitializationVector == null)
+            {
+                CryptographyProperties.InitializationVector = GenerateInitializationVector();
+            }
 
             var toDecryptBytes = Convert.FromBase64String(toDecrypt);
 
-            return Decrypt(toDecryptBytes, Properties.Key, Properties.InitializationVector, Properties.CipherMode);
+            return Decrypt(toDecryptBytes, CryptographyProperties.Key, CryptographyProperties.InitializationVector, CryptographyProperties.CipherMode);
         }
 
         /// <summary>

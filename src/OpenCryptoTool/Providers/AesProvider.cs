@@ -31,6 +31,16 @@ namespace OpenCryptoTool.Providers
         }
 
         /// <summary>
+        ///     Creates new instance of AES crypto provider.
+        /// </summary>
+        /// <param name="key">Symmetric key.</param>
+        /// <param name="cypherMode">Cipher mode.</param>
+        public AesProvider(string key, CipherMode cipherMode)
+            : base(key, cipherMode, Aes.Create("AesCryptoServiceProvider"))
+        {
+        }
+
+        /// <summary>
         ///     AES Encryption method.
         /// </summary>
         /// <param name="toEncrypt">String which should be encrypted.</param>

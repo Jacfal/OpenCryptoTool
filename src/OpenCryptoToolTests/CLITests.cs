@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace OpenCryptoToolTests
+namespace OpenCryptoToolTests.CLITests
 {
     [TestClass]
     public class CLITests
@@ -74,6 +74,9 @@ namespace OpenCryptoToolTests
             Assert.AreEqual(expectedOutput, cliOutput.Phrase);
         }
 
+        // TODO TDes CLI ECB test
+
+        // TODO failed test
         public void Aes256CBC_CLI_Decryption_Failed(string encryptedPhrase, string key, string IV)
         {
         }

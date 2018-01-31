@@ -20,6 +20,12 @@ namespace OpenCryptoTool
         {
             Log.Information($"Command for {cliInput.CipherType.CryptographyStandard.ToString()} de/encryption successfully parsed.");
 
+            // warning when IV is entered by user and ECB cipher mode is used
+            if (!string.IsNullOrEmpty(cliInput.InitializationVector) && cliInput.CipherType.CipherMode == CipherMode.ECB)
+            {
+                Log.Information("Initialization vector is not valid for ECB cipher mode and will be ignored.");
+            }
+
             SymmetricCryptographyCliOutput cliOutput = null;
             switch (cliInput.CipherType.CryptographyStandard)
             {
@@ -62,8 +68,8 @@ namespace OpenCryptoTool
             Log.Information($"New aes encryption request => {toEncryption.CipherType}");
 
             var aesProvider = new AesProvider();
-            byte[] key;
-            byte[] IV;
+            byte[] key = new byte[0];
+            byte[] IV = new byte[0];
 
             // check if user provide encryption key
             if (!string.IsNullOrEmpty(toEncryption.Key))
@@ -80,7 +86,7 @@ namespace OpenCryptoTool
             }
 
             // check if user provide IV
-            if (!string.IsNullOrEmpty(toEncryption.InitializationVector))
+            if (!string.IsNullOrEmpty(toEncryption.InitializationVector) && toEncryption.CipherType.CipherMode != CipherMode.ECB)
             {
                 Log.Information("Working with the provided initialization vector.");
 
@@ -98,7 +104,14 @@ namespace OpenCryptoTool
 
             Log.Information("Successfully encrypted.");
 
-            return new SymmetricCryptographyCliOutput(IV, key, encrypted, toEncryption.CipherType);
+            if (toEncryption.CipherType.CipherMode == CipherMode.ECB)
+            {
+                return new SymmetricCryptographyCliOutput(key, encrypted, toEncryption.CipherType);
+            }
+            else
+            {
+                return new SymmetricCryptographyCliOutput(IV, key, encrypted, toEncryption.CipherType);
+            }
         }
 
         /// <summary>
@@ -124,15 +137,25 @@ namespace OpenCryptoTool
                 toDecryption.Key = CLIHelpers.InformationProvider("Enter encryption key");
             }
 
-            if (string.IsNullOrEmpty(toDecryption.InitializationVector))
+            if (string.IsNullOrEmpty(toDecryption.InitializationVector) && toDecryption.CipherType.CipherMode != CipherMode.ECB)
             {
                 Log.Information("The initialization vector is missing - asking user for input");
 
                 toDecryption.InitializationVector = CLIHelpers.InformationProvider("Enter initialization vector");
             }
 
-            var aesProvider = new AesProvider(toDecryption.Key, toDecryption.InitializationVector, toDecryption.CipherType.CipherMode);
-            var decrypted =  aesProvider.Decrypt(toDecryption.Content);
+            AesProvider aesProvider;
+            if (toDecryption.CipherType.CipherMode == CipherMode.ECB)
+            {
+                // ignore IV when ECB cipher mode is used
+                aesProvider = new AesProvider(toDecryption.Key, toDecryption.CipherType.CipherMode); 
+            }
+            else
+            {
+                aesProvider = new AesProvider(toDecryption.Key, toDecryption.InitializationVector, toDecryption.CipherType.CipherMode);
+            }
+
+            var decrypted = aesProvider.Decrypt(toDecryption.Content);
 
             Log.Information("Successfully decrypted.");
 

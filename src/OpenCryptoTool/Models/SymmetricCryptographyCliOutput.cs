@@ -22,18 +22,16 @@ namespace OpenCryptoTool.Models
         /// <summary>
         ///     Create printing model for symmetric encryption.
         /// </summary>
-        /// <param name="initializationVector">Initialization vector.</param>
         /// <param name="key">Encryption key.</param>
         /// <param name="phrase">The phrase to encrypt/decrypt.</param>
+        /// <param name="cipherType">Cipher type.</param>
         /// <param name="returnedDataFormat">Data format of returned values.</param>
-        public SymmetricCryptographyCliOutput(
-            string initializationVector, 
+        public SymmetricCryptographyCliOutput( 
             string key, 
             string phrase,
             SymmetricCipherType cipherType,
             EncryptedTextReturnOptions returnedDataFormat)
         {
-            IV = initializationVector;
             Key = key;
             Phrase = phrase;
             Encoded = returnedDataFormat.ToString();
@@ -46,9 +44,47 @@ namespace OpenCryptoTool.Models
         /// <param name="initializationVector">Initialization vector.</param>
         /// <param name="key">Encryption key.</param>
         /// <param name="phrase">The phrase to encrypt/decrypt.</param>
+        /// <param name="cipherType">Cipher type.</param>
+        /// <param name="returnedDataFormat">Data format of returned values.</param>
         public SymmetricCryptographyCliOutput(
-            byte[] initializationVector, 
-            byte[] key, 
+            string initializationVector,
+            string key,
+            string phrase,
+            SymmetricCipherType cipherType,
+            EncryptedTextReturnOptions returnedDataFormat)
+            : this (key, phrase, cipherType, returnedDataFormat)
+        {
+            IV = initializationVector;
+        }
+
+        /// <summary>
+        ///     Create printing model for symmetric encryption.
+        /// </summary>
+        /// <param name="initializationVector">Initialization vector.</param>
+        /// <param name="key">Encryption key.</param>
+        /// <param name="phrase">The phrase to encrypt/decrypt.</param>
+        /// <param name="cipherType">Cipher type.</param>
+        public SymmetricCryptographyCliOutput( 
+            byte[] key,
+            byte[] encryptedPhrase,
+            SymmetricCipherType cipherType) : this(
+                Convert.ToBase64String(key),
+                Convert.ToBase64String(encryptedPhrase),
+                cipherType,
+                EncryptedTextReturnOptions.Base64String)
+        {
+        }
+
+        /// <summary>
+        ///     Create printing model for symmetric encryption.
+        /// </summary>
+        /// <param name="initializationVector">Initialization vector.</param>
+        /// <param name="key">Encryption key.</param>
+        /// <param name="phrase">The phrase to encrypt/decrypt.</param>
+        /// <param name="cipherType">Cipher type.</param>
+        public SymmetricCryptographyCliOutput(
+            byte[] initializationVector,
+            byte[] key,
             byte[] encryptedPhrase,
             SymmetricCipherType cipherType) : this(
                 Convert.ToBase64String(initializationVector),

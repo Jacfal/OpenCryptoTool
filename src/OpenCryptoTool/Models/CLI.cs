@@ -128,6 +128,54 @@ namespace OpenCryptoTool.Models
     }
 
     /// <summary>
+    ///     Aes 128 CBC CLI command.
+    /// </summary>
+    [Verb("aes-128-cbc", HelpText = "N/A")]
+    public class Aes128CBC : SymmetricCryptographyCliInput
+    {
+        public Aes128CBC()
+        {
+            CipherType = new SymmetricCipherType(128, CryptographyStandard.Aes, CipherMode.CBC);
+        }
+    }
+
+    /// <summary>
+    ///     Aes 256 ECB CLI command.
+    /// </summary>
+    [Verb("aes-256-ecb", HelpText = "N/A")]
+    public class Aes256ECB : SymmetricCryptographyCliInput
+    {
+        public Aes256ECB()
+        {
+            CipherType = new SymmetricCipherType(256, CryptographyStandard.Aes, CipherMode.ECB);
+        }
+    }
+
+    /// <summary>
+    ///     Aes 192 ECB CLI command.
+    /// </summary>
+    [Verb("aes-192-ecb", HelpText = "N/A")]
+    public class Aes192ECB : SymmetricCryptographyCliInput
+    {
+        public Aes192ECB()
+        {
+            CipherType = new SymmetricCipherType(192, CryptographyStandard.Aes, CipherMode.ECB);
+        }
+    }
+
+    /// <summary>
+    ///     Aes 128 ECB CLI command.
+    /// </summary>
+    [Verb("aes-128-ecb", HelpText = "N/A")]
+    public class Aes128ECB : SymmetricCryptographyCliInput
+    {
+        public Aes128ECB()
+        {
+            CipherType = new SymmetricCipherType(128, CryptographyStandard.Aes, CipherMode.ECB);
+        }
+    }
+
+    /// <summary>
     ///     Cipher type definition.
     /// </summary>
     public enum CryptographyStandard

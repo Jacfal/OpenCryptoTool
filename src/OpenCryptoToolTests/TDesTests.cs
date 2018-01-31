@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenCryptoTool.Providers;
 
-namespace OpenCryptoToolTests
+namespace OpenCryptoToolTests.TDesTests
 {
     [TestClass]
     public class TDesTests

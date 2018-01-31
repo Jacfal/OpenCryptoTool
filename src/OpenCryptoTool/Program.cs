@@ -26,7 +26,12 @@ namespace OpenCryptoTool
 
             try
             {
-                var result = Parser.Default.ParseArguments<Aes256CBC, Aes192CBC>(args);
+                var result = Parser.Default.ParseArguments<
+                    Aes256CBC,
+                    Aes192CBC,
+                    Aes128CBC,
+                    Aes256ECB
+                    >(args);
 
                 result
                     .WithParsed(obj =>
@@ -40,6 +45,7 @@ namespace OpenCryptoTool
             }
             catch (Exception e)
             {
+                // TODO if invalid key or IV is used, then invalid padding mode exception is raised... (more human readable info required)
                 Console.WriteLine(e.Message);
                 Log.Information(e.ToString());
             }

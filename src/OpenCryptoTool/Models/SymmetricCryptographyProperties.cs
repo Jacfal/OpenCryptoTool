@@ -20,12 +20,24 @@ namespace OpenCryptoTool.Models
         ///     Create new cryptography properties model.
         /// </summary>
         /// <param name="key">Symmetric key.</param>
-        /// <param name="IV">Initialization vector.</param>
-        public SymmetricCryptographyProperties(string key, string IV, CipherMode cipherMode)
+        /// <param name="cipherMode">Cipher mode.</param>
+        public SymmetricCryptographyProperties(string key, CipherMode cipherMode)
         {
             Key = Convert.FromBase64String(key.Trim());
-            InitializationVector = Convert.FromBase64String(IV.Trim());
             CipherMode = cipherMode;
+        }
+
+        /// <summary>
+        ///     Create new cryptography properties model.
+        /// </summary>
+        /// <param name="key">Symmetric key.</param>
+        /// <param name="IV">Initialization vector.</param>
+        /// <param name="cipherMode">Cipher mode.</param>
+
+        public SymmetricCryptographyProperties(string key, string IV, CipherMode cipherMode)
+            : this (key, cipherMode)
+        {
+            InitializationVector = Convert.FromBase64String(IV.Trim());
         }
 
         /// <summary>

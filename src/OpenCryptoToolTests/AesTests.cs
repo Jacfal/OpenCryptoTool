@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using OpenCryptoTool.Providers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AesTests
+namespace OpenCryptoToolTests.AesTests
 {
     [TestClass]
     public class AesTests
