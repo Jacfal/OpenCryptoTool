@@ -48,7 +48,7 @@ namespace OpenCryptoTool.Providers
                 var encryptor = _symmetricAlgorithm.CreateEncryptor(key, _symmetricAlgorithm.IV);
 
                 Log.Information("TDES encryptor created.");
-                return base.Encrypt(toEncrypt, key, initializationVector, cipherMode, encryptor);
+                return base.Encrypt(toEncrypt, encryptor);
             }
         }
 
@@ -65,7 +65,7 @@ namespace OpenCryptoTool.Providers
                 var decryptor = tdes.CreateDecryptor();
 
                 Log.Information("TDES decryptor created.");
-                return base.Decrypt(toDecrypt, key, initializationVector, cipherMode, decryptor);
+                return Decrypt(toDecrypt, decryptor);
             }
         }
 

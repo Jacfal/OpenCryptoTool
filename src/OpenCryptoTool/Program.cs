@@ -23,14 +23,20 @@ namespace OpenCryptoTool
             Log.Logger = loggerConfiguration.CreateLogger();
             Log.Information("");
             Log.Information("Operation started.");
-
+            
             try
             {
                 var result = Parser.Default.ParseArguments<
                     Aes256CBC,
                     Aes192CBC,
                     Aes128CBC,
-                    Aes256ECB
+                    Aes256ECB,
+                    Aes192ECB,
+                    Aes128ECB,
+                    TDes192CBC,
+                    TDes128CBC,
+                    TDes192ECB,
+                    TDes128ECB
                     >(args);
 
                 result

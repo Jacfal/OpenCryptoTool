@@ -18,7 +18,7 @@ namespace OpenCryptoTool.Providers
             : base (Aes.Create("AesCryptoServiceProvider"))
         {
         }
-
+        
         /// <summary>
         ///     Creates new instance of AES crypto provider.
         /// </summary>
@@ -57,7 +57,7 @@ namespace OpenCryptoTool.Providers
                 var encryptor = aes.CreateEncryptor(key, aes.IV);
 
                 Log.Information("AES encryptor created.");
-                return base.Encrypt(toEncrypt, key, initializationVector, cipherMode, encryptor);
+                return base.Encrypt(toEncrypt, encryptor);
             }
         }
 
@@ -82,7 +82,7 @@ namespace OpenCryptoTool.Providers
                 var decryptor = aes.CreateDecryptor();
 
                 Log.Information("AES decryptor created.");
-                return base.Decrypt(toDecrypt, key, initializationVector, cipherMode, decryptor);
+                return base.Decrypt(toDecrypt, decryptor);
             }
         }
 

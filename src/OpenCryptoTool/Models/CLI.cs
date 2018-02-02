@@ -176,12 +176,59 @@ namespace OpenCryptoTool.Models
     }
 
     /// <summary>
+    ///     TDes 192 CBC CLI command.
+    /// </summary>
+    [Verb("tdes-192-cbc", HelpText = "N/A")]
+    public class TDes192CBC : SymmetricCryptographyCliInput
+    {
+        public TDes192CBC()
+        {
+            CipherType = new SymmetricCipherType(192, CryptographyStandard.TripleDes, CipherMode.CBC);
+        }
+    }
+
+    /// <summary>
+    ///     TDes 128 CBC CLI command.
+    /// </summary>
+    [Verb("tdes-128-cbc", HelpText = "N/A")]
+    public class TDes128CBC : SymmetricCryptographyCliInput
+    {
+        public TDes128CBC()
+        {
+            CipherType = new SymmetricCipherType(128, CryptographyStandard.TripleDes, CipherMode.CBC);
+        }
+    }
+
+    /// <summary>
+    ///     TDes 192 CBC CLI command.
+    /// </summary>
+    [Verb("tdes-192-ecb", HelpText = "N/A")]
+    public class TDes192ECB : SymmetricCryptographyCliInput
+    {
+        public TDes192ECB()
+        {
+            CipherType = new SymmetricCipherType(192, CryptographyStandard.TripleDes, CipherMode.ECB);
+        }
+    }
+
+    /// <summary>
+    ///     TDes 128 ECB CLI command.
+    /// </summary>
+    [Verb("tdes-128-ecb", HelpText = "N/A")]
+    public class TDes128ECB : SymmetricCryptographyCliInput
+    {
+        public TDes128ECB()
+        {
+            CipherType = new SymmetricCipherType(128, CryptographyStandard.TripleDes, CipherMode.ECB);
+        }
+    }
+
+    /// <summary>
     ///     Cipher type definition.
     /// </summary>
     public enum CryptographyStandard
     {
         Aes,
-        Des,
         TripleDes
     }
 

@@ -8,10 +8,10 @@ namespace OpenCryptoToolTests.TDesTests
     public class TDesTests
     {
         [DataTestMethod]
-        [DataRow("Hello, world!", 192)]
-        [DataRow("Another test string .!;", 128)]
-        [DataRow("Test string![]{}%", 192)]
-        public void TDes_Encryption_Decryption_Success(string testPhrase, int keySize)
+        [DataRow("Hello, world!", 192, CipherMode.ECB)]
+        [DataRow("Another test string .!;", 128, CipherMode.ECB)]
+        [DataRow("Test string![]{}%", 192, CipherMode.ECB)]
+        public void TDes_Encryption_Decryption_Success(string testPhrase, int keySize, CipherMode cipherMode)
         {
             // ARRANGE
             var tdesCrypto = new TripleDesProvider();
@@ -20,8 +20,8 @@ namespace OpenCryptoToolTests.TDesTests
             var IV = tdesCrypto.GenerateInitializationVector();
 
             // ACT
-            var encrypted = tdesCrypto.Encrypt(testPhrase, key, IV, CipherMode.CBC);
-            var decrypted = tdesCrypto.Decrypt(encrypted, key, IV, CipherMode.CBC);
+            var encrypted = tdesCrypto.Encrypt(testPhrase, key, IV, cipherMode);
+            var decrypted = tdesCrypto.Decrypt(encrypted, key, IV, cipherMode);
 
             // ASSERT
             Assert.AreEqual(testPhrase, decrypted);

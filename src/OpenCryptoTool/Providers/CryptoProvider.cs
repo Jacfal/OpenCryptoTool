@@ -25,6 +25,7 @@ namespace OpenCryptoTool.Providers
         public CryptoProvider(SymmetricAlgorithm symmetricAlgorithm)
         {
             _symmetricAlgorithm = symmetricAlgorithm;
+            CryptographyProperties = new SymmetricCryptographyProperties(); // TODO property implementation
         }
 
         /// <summary>
@@ -68,9 +69,9 @@ namespace OpenCryptoTool.Providers
         /// <param name="initializationVector">Initialization vector.</param>
         /// <param name="cipherMode">Block cipher mode of operation.</param>
         /// <returns>Encrypted bytes array.</returns>
-        public abstract byte[] Encrypt(string toEncrypt, byte[] key,byte[] initializationVector, CipherMode cipherMode);
+        public abstract byte[] Encrypt(string toEncrypt, byte[] key, byte[] initializationVector, CipherMode cipherMode);
 
-        protected byte[] Encrypt(string toEncrypt, byte[] key,byte[] initializationVector, CipherMode cipherMode, ICryptoTransform encryptor)
+        protected byte[] Encrypt(string toEncrypt, ICryptoTransform encryptor)
         {
             if(string.IsNullOrEmpty(toEncrypt)) throw new ArgumentNullException("Encrypted text cann't be null or empty.");
             
@@ -100,7 +101,7 @@ namespace OpenCryptoTool.Providers
         /// <returns>Decrypted phrase.</returns>
         public string Decrypt(string toDecrypt)
         {
-            if (CryptographyProperties == null) throw new NullReferenceException("Aes provider properties mus be set.");
+            if (CryptographyProperties == null) throw new NullReferenceException("Crypto provider properties mus be set.");
             if (CryptographyProperties.Key == null) throw new NullReferenceException("The decryption key must be set.");
 
             if (CryptographyProperties.InitializationVector == null)
@@ -123,7 +124,7 @@ namespace OpenCryptoTool.Providers
         /// <returns>Decrypted string.</returns>
         public abstract string Decrypt(byte[] toDecrypt, byte[] key, byte[] initializationVector, CipherMode cipherMode);
 
-        protected string Decrypt(byte[] toDecrypt, byte[] key, byte[] initializationVector, CipherMode cipherMode, ICryptoTransform decryptor)
+        protected string Decrypt(byte[] toDecrypt, ICryptoTransform decryptor)
         {
             using (var memoryStream = new MemoryStream(toDecrypt))
             {

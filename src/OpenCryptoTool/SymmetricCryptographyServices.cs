@@ -26,35 +26,30 @@ namespace OpenCryptoTool
                 Log.Information("Initialization vector is not valid for ECB cipher mode and will be ignored.");
             }
 
-            SymmetricCryptographyCliOutput cliOutput = null;
+            // Choosing cipher type
+            CryptoProvider cryptoProvider;
             switch (cliInput.CipherType.CryptographyStandard)
             {
-                case (CryptographyStandard.Aes):
-                    cliOutput = AesCryptography(cliInput);
+                case CryptographyStandard.Aes:
+                    cryptoProvider = new AesProvider();
+                    break;
+
+                case CryptographyStandard.TripleDes:
+                    cryptoProvider = new TripleDesProvider();
                     break;
 
                 default:
-                    break;
+                    throw new CryptographicException($"Unknown cryptography standard {cliInput.CipherType.CryptographyStandard}.");
             }
 
-            return cliOutput;
-        }
 
-        /// <summary>
-        ///     AES cryptography processor.
-        /// </summary>
-        /// <param name="cliObject"></param>
-        public static SymmetricCryptographyCliOutput AesCryptography(ISymmetricCryptographyCliInput cliObject)
-        {
-            if (cliObject.Encryption)
+            if (cliInput.Encryption)
             {
-                // encryption
-                return AesEncryption(cliObject); // TODO opravit... en/decryption should be enum
+                return EncryptionRequest(cliInput, cryptoProvider); // TODO opravit... en/decryption should be enum
             }
             else
             {
-                // decryption
-                return AesDecryption(cliObject);
+                return DecryptionRequest(cliInput, cryptoProvider);
             }
         }
 
@@ -63,11 +58,10 @@ namespace OpenCryptoTool
         /// </summary>
         /// <param name="toEncryption">CLI input model.</param>
         /// <returns>CLI output model with information about decryption.</returns>
-        public static SymmetricCryptographyCliOutput AesEncryption(ISymmetricCryptographyCliInput toEncryption)
+        public static SymmetricCryptographyCliOutput EncryptionRequest(ISymmetricCryptographyCliInput toEncryption, CryptoProvider cryptoProvider)
         {
             Log.Information($"New aes encryption request => {toEncryption.CipherType}");
 
-            var aesProvider = new AesProvider();
             byte[] key = new byte[0];
             byte[] IV = new byte[0];
 
@@ -82,7 +76,7 @@ namespace OpenCryptoTool
             {
                 Log.Information("Generating new encryption key.");
 
-                key = aesProvider.GenerateKey(toEncryption.CipherType.KeySize);
+                key = cryptoProvider.GenerateKey(toEncryption.CipherType.KeySize);
             }
 
             // check if user provide IV
@@ -97,10 +91,10 @@ namespace OpenCryptoTool
             {
                 Log.Information("Generating new initialization vector.");
 
-                IV = aesProvider.GenerateInitializationVector();
+                IV = cryptoProvider.GenerateInitializationVector();
             }
 
-            var encrypted = aesProvider.Encrypt(toEncryption.Content, key, IV, toEncryption.CipherType.CipherMode);
+            var encrypted = cryptoProvider.Encrypt(toEncryption.Content, key, IV, toEncryption.CipherType.CipherMode);
 
             Log.Information("Successfully encrypted.");
 
@@ -119,7 +113,7 @@ namespace OpenCryptoTool
         /// </summary>
         /// <param name="toDecryption">CLI input model.</param>
         /// <returns>CLI output model with information about decryption.</returns>
-        public static SymmetricCryptographyCliOutput AesDecryption(ISymmetricCryptographyCliInput toDecryption)
+        public static SymmetricCryptographyCliOutput DecryptionRequest(ISymmetricCryptographyCliInput toDecryption, CryptoProvider cryptoProvider)
         {
             Log.Information($"New aes decryption request => {toDecryption.CipherType}");
 
@@ -144,18 +138,19 @@ namespace OpenCryptoTool
                 toDecryption.InitializationVector = CLIHelpers.InformationProvider("Enter initialization vector");
             }
 
-            AesProvider aesProvider;
+            SymmetricCryptographyProperties cryptoProperties;
             if (toDecryption.CipherType.CipherMode == CipherMode.ECB)
             {
                 // ignore IV when ECB cipher mode is used
-                aesProvider = new AesProvider(toDecryption.Key, toDecryption.CipherType.CipherMode); 
+                cryptoProperties = new SymmetricCryptographyProperties(toDecryption.Key, toDecryption.CipherType.CipherMode);
             }
             else
             {
-                aesProvider = new AesProvider(toDecryption.Key, toDecryption.InitializationVector, toDecryption.CipherType.CipherMode);
+                cryptoProperties = new SymmetricCryptographyProperties(toDecryption.Key, toDecryption.InitializationVector, toDecryption.CipherType.CipherMode);
             }
 
-            var decrypted = aesProvider.Decrypt(toDecryption.Content);
+            cryptoProvider.CryptographyProperties = cryptoProperties;
+            var decrypted = cryptoProvider.Decrypt(toDecryption.Content);
 
             Log.Information("Successfully decrypted.");
 
