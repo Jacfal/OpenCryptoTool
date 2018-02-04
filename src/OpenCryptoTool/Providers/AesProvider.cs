@@ -85,16 +85,5 @@ namespace OpenCryptoTool.Providers
                 return base.Decrypt(toDecrypt, decryptor);
             }
         }
-
-        /// <summary>
-        ///     Generate AES key for encryption and decryption.
-        /// </summary>
-        /// <param name="keySize">Key size. In default set to 256.</param>
-        /// <returns>AES key byte array.</returns>
-        public override byte[] GenerateKey(int keySize = 256)
-        {
-            if (!_symmetricAlgorithm.ValidKeySize(keySize)) throw new CryptographicException("Invalid AES keysize. Valid AES keysize value is 128, 192 or 256 bytes.");
-            return base.GenerateKey(keySize);
-        }
     }
 }

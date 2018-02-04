@@ -45,7 +45,8 @@ namespace OpenCryptoTool.Providers
             {
                 tdes.Mode = cipherMode;
                 tdes.IV = initializationVector;
-                var encryptor = _symmetricAlgorithm.CreateEncryptor(key, _symmetricAlgorithm.IV);
+                tdes.Key = key;
+                var encryptor = tdes.CreateEncryptor();
 
                 Log.Information("TDES encryptor created.");
                 return base.Encrypt(toEncrypt, encryptor);
@@ -54,7 +55,7 @@ namespace OpenCryptoTool.Providers
 
         public override string Decrypt(byte[] toDecrypt, byte[] key, byte[] initializationVector, CipherMode cipherMode)
         {
-            if(toDecrypt == null || toDecrypt.Length < 0) throw new ArgumentNullException("Encrypted text cann't be null or empty.");
+            if(toDecrypt == null || toDecrypt.Length < 0) throw new ArgumentNullException("Decrypted text cann't be null or empty.");
             
             using(var tdes = new TripleDESCryptoServiceProvider())
             {
@@ -67,17 +68,6 @@ namespace OpenCryptoTool.Providers
                 Log.Information("TDES decryptor created.");
                 return Decrypt(toDecrypt, decryptor);
             }
-        }
-
-        /// <summary>
-        ///     Generate TDES key for encryption and decryption.
-        /// </summary>
-        /// <param name="keySize"></param>
-        /// <returns></returns>
-        public override byte[] GenerateKey(int keySize = 192)
-        {
-            if (!_symmetricAlgorithm.ValidKeySize(keySize)) throw new CryptographicException("Invalid TDES keysize. Valid TDES keysize value is 128, 192 bytes.");
-            return base.GenerateKey(keySize);
         }
     }
 }

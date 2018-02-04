@@ -16,7 +16,7 @@ namespace OpenCryptoTool.Providers
         /// </summary>
         public ISymmetricCryptographyProperties CryptographyProperties { get; set; }
 
-        protected SymmetricAlgorithm _symmetricAlgorithm;
+        private SymmetricAlgorithm _symmetricAlgorithm;
 
         /// <summary>
         ///     Create a new crypto provider.
@@ -152,6 +152,8 @@ namespace OpenCryptoTool.Providers
         /// <returns>Key byte array.</returns>
         public virtual byte[] GenerateKey(int keySize)
         {
+            if (!_symmetricAlgorithm.ValidKeySize(keySize)) throw new CryptographicException("Invalid key size for this algorithm.");
+
             _symmetricAlgorithm.Clear();
 
             _symmetricAlgorithm.KeySize = keySize;

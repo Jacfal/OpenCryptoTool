@@ -62,8 +62,8 @@ namespace OpenCryptoTool
         {
             Log.Information($"New aes encryption request => {toEncryption.CipherType}");
 
-            byte[] key = new byte[0];
-            byte[] IV = new byte[0];
+            byte[] key = null;
+            byte[] IV = null;
 
             // check if user provide encryption key
             if (!string.IsNullOrEmpty(toEncryption.Key))
